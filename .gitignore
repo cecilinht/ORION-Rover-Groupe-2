@@ -1,0 +1,31 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+# VS Code
+.vscode/
+# PlatformIO
+.pio/
+firmware/.pio/
+# AI models
+*.h5
+*.keras
+*.tflite
+*.onnx
+# Dataset
+ai/dataset/raw/*
+!ai/dataset/raw/.gitkeep
+# Logs
+*.log
+logs/
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+# OS
+Thumbs.db
+.DS_Store
