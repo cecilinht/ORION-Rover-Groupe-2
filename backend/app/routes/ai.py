@@ -56,7 +56,7 @@ def predict():
         confidence = float(result.get("confidence", 0))
         now = time.time()
 
-        if sign_class in SIGN_PHRASES and confidence >= 80.0:
+        if sign_class in SIGN_PHRASES and confidence >= 65.0:
             if sign_class != _last_spoken_sign or (now - _last_spoken_time) >= 4.0:
                 _last_spoken_sign = sign_class
                 _last_spoken_time = now

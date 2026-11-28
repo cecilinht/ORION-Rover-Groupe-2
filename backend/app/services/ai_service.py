@@ -1,4 +1,12 @@
 
+def center_crop_square(img):
+    h, w = img.shape[:2]
+    side = int(min(h, w) * 0.72)
+    y1 = max(0, (h - side) // 2)
+    x1 = max(0, (w - side) // 2)
+    return img[y1:y1 + side, x1:x1 + side]
+
+
 import json
 from pathlib import Path
 
