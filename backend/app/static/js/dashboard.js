@@ -1,3 +1,4 @@
+var voiceEnabled = true;
 
 // ======================================
 // MOTEUR SONORE & VOCAL HORS-LIGNE (WEB AUDIO API)
