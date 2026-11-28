@@ -464,7 +464,12 @@
 
         
             <div class="card" style="grid-column: 1 / -1;">
-                <h3>Carte 2D & Radar Ultrasons Temps Réel (Circuit 6m × 4m)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="margin: 0;">Carte 2D & Radar Ultrasons Temps Réel (Circuit 6m × 4m)</h3>
+                    <button id="demo-sim-btn" type="button" style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        ▶ Simuler Parcours (Démo Jury)
+                    </button>
+                </div>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
                     <canvas id="rover-map" width="640" height="320" style="width: 100%; max-width: 640px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.35); background: #040812;"></canvas>
                 </div>

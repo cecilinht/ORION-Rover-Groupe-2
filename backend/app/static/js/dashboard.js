@@ -1,11 +1,12 @@
 
 // ============================================================================
-// CARTE 2D INTERACTIVE & RADAR 3 ZONES EN TEMPS REEL
+// CARTE 2D INTERACTIVE, SIMULATION DEMO JURY & SYNCHRO NOTIF CAMERA
 // ============================================================================
-let roverTrail = [{ x: 110, y: 160 }];
+let roverTrail = [{ x: 70, y: 160 }];
 let roverAngle = 0;
+let demoTimer = null;
 
-function drawRoverMap(frontDist, leftDist, rightDist, status) {
+function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "ATTENTE") {
     const canvas = document.getElementById("rover-map");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -13,7 +14,7 @@ function drawRoverMap(frontDist, leftDist, rightDist, status) {
 
     ctx.clearRect(0, 0, W, H);
 
-    // Grille metrique (1 carreau = 50 cm)
+    // Grille metrique (50 cm / carreau)
     ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
     ctx.lineWidth = 1;
     for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
@@ -21,84 +22,134 @@ function drawRoverMap(frontDist, leftDist, rightDist, status) {
 
     // Piste noire ovale du circuit (6m x 4m)
     ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
-    ctx.lineWidth = 14;
-    ctx.strokeRect(70, 50, W - 140, H - 100);
+    ctx.lineWidth = 16;
+    ctx.strokeRect(70, 55, W - 140, H - 110);
     ctx.strokeStyle = "#38bdf8";
     ctx.lineWidth = 1.5;
-    ctx.setLineDash([8, 6]);
-    ctx.strokeRect(70, 50, W - 140, H - 100);
+    ctx.setLineDash([6, 6]);
+    ctx.strokeRect(70, 55, W - 140, H - 110);
     ctx.setLineDash([]);
 
     // Points de livraison (Base, Zone A, Zone B, Zone C)
     const zones = [
         { x: 70, y: 160, label: "BASE", color: "#10b981" },
-        { x: W / 2, y: 50, label: "ZONE A", color: "#a855f7" },
+        { x: W / 2, y: 55, label: "ZONE A", color: "#a855f7" },
         { x: W - 70, y: 160, label: "ZONE B", color: "#a855f7" },
-        { x: W / 2, y: H - 50, label: "ZONE C", color: "#a855f7" }
+        { x: W / 2, y: H - 55, label: "ZONE C", color: "#a855f7" }
     ];
     zones.forEach(z => {
         ctx.fillStyle = z.color;
-        ctx.beginPath(); ctx.arc(z.x, z.y, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#e2e8f0";
+        ctx.beginPath(); ctx.arc(z.x, z.y, 7, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#f8fafc";
         ctx.font = "bold 11px sans-serif";
-        ctx.fillText(z.label, z.x - 20, z.y - 11);
+        ctx.fillText(z.label, z.x - 20, z.y - 12);
     });
 
-    // Mise a jour position si le robot roule
+    // Deplacement sur le circuit si EN_MISSION
     const cur = roverTrail[roverTrail.length - 1];
-    if (status === "EN_MISSION" || (frontDist !== null && frontDist > 15)) {
-        const nx = Math.min(W - 70, Math.max(70, cur.x + Math.cos(roverAngle) * 2.2));
-        const ny = Math.min(H - 50, Math.max(50, cur.y + Math.sin(roverAngle) * 2.2));
-        if (nx >= W - 72 && roverAngle === 0) roverAngle = Math.PI / 2;
-        else if (ny >= H - 52 && Math.abs(roverAngle - Math.PI / 2) < 0.1) roverAngle = Math.PI;
-        else if (nx <= 72 && Math.abs(roverAngle - Math.PI) < 0.1) roverAngle = -Math.PI / 2;
-        else if (ny <= 52 && Math.abs(roverAngle + Math.PI / 2) < 0.1) roverAngle = 0;
+    if (status === "EN_MISSION" && (frontDist === null || frontDist >= 15)) {
+        const speedStep = frontDist <= 40 ? 2.5 : 5.0;
+        let nx = cur.x + Math.cos(roverAngle) * speedStep;
+        let ny = cur.y + Math.sin(roverAngle) * speedStep;
 
-        if (status === "EN_MISSION") {
-            roverTrail.push({ x: nx, y: ny });
-            if (roverTrail.length > 150) roverTrail.shift();
-        }
+        if (roverAngle === 0 && nx >= W - 70) { nx = W - 70; roverAngle = Math.PI / 2; }
+        else if (Math.abs(roverAngle - Math.PI / 2) < 0.1 && ny >= H - 55) { ny = H - 55; roverAngle = Math.PI; }
+        else if (Math.abs(roverAngle - Math.PI) < 0.1 && nx <= 70) { nx = 70; roverAngle = -Math.PI / 2; }
+        else if (Math.abs(roverAngle + Math.PI / 2) < 0.1 && ny <= 55) { ny = 55; roverAngle = 0; }
+
+        roverTrail.push({ x: nx, y: ny });
+        if (roverTrail.length > 140) roverTrail.shift();
     }
 
     const pos = roverTrail[roverTrail.length - 1];
 
-    // Trace de la trajectoire odometrique
+    // Trace trajectoire odometrique
     if (roverTrail.length > 1) {
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.7)";
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.85)";
+        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(roverTrail.x, roverTrail.y);
+        ctx.moveTo(roverTrail[0].x, roverTrail[0].y);
         for (let i = 1; i < roverTrail.length; i++) ctx.lineTo(roverTrail[i].x, roverTrail[i].y);
         ctx.stroke();
     }
 
-    // Faisceau Ultrason Avant (couleur selon zone Verte >40, Orange 15-40, Rouge <15)
-    const fDist = frontDist !== null ? frontDist : 80;
-    const beamLen = Math.min(90, fDist * 1.1);
+    // Faisceau radar ultrason avant (Vert >40, Orange 15-40, Rouge <15)
+    const fDist = (frontDist !== null && frontDist !== undefined) ? frontDist : 85;
+    const beamLen = Math.min(95, Math.max(22, fDist * 1.1));
     const beamColor = fDist < 15 ? "#ef4444" : (fDist <= 40 ? "#f59e0b" : "#10b981");
 
-    ctx.fillStyle = beamColor + "33";
+    ctx.fillStyle = beamColor + "44";
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
     ctx.arc(pos.x, pos.y, beamLen, roverAngle - 0.35, roverAngle + 0.35);
     ctx.closePath();
     ctx.fill();
 
-    // Dessin du Rover
+    // Corps du robot ORION-Rover
     ctx.save();
     ctx.translate(pos.x, pos.y);
     ctx.rotate(roverAngle);
     ctx.fillStyle = "#38bdf8";
-    ctx.fillRect(-12, -9, 24, 18);
+    ctx.fillRect(-13, -10, 26, 20);
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(6, -6, 4, 12); // Avant du robot
+    ctx.fillRect(7, -7, 4, 14);
     ctx.restore();
 
-    // Legende radar en haut a gauche
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "11px monospace";
-    ctx.fillText(`Avant: ${fDist}cm | Gauche: ${leftDist ?? "--"}cm | Droite: ${rightDist ?? "--"}cm`, 14, 20);
+    // Télémétrie en haut du canvas
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "12px monospace";
+    ctx.fillText(`État: ${status} | Avant: ${fDist}cm | Gauche: ${leftDist ?? 60}cm | Droite: ${rightDist ?? 65}cm`, 16, 24);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Dessiner la carte des le chargement
+    drawRoverMap(85, 60, 65, "ATTENTE");
+
+    // Synchroniser le masquage de la notif IA quand on ferme la cam avec la croix
+    const closeBtn = document.getElementById("cam-close-btn");
+    const reopenBtn = document.getElementById("cam-reopen-btn");
+    const aiBox = document.getElementById("ai-result");
+    if (closeBtn && aiBox) {
+        closeBtn.addEventListener("click", () => { aiBox.style.display = "none"; });
+    }
+    if (reopenBtn && aiBox) {
+        reopenBtn.addEventListener("click", () => { aiBox.style.display = "block"; });
+    }
+
+    // Bouton Simulation Parcours (Demo Jury en 1 clic)
+    const simBtn = document.getElementById("demo-sim-btn");
+    if (simBtn) {
+        simBtn.addEventListener("click", () => {
+            if (demoTimer) {
+                clearInterval(demoTimer);
+                demoTimer = null;
+                simBtn.textContent = "▶ Simuler Parcours (Démo Jury)";
+                simBtn.style.background = "linear-gradient(135deg, #10b981, #059669)";
+                drawRoverMap(85, 60, 65, "ATTENTE");
+                return;
+            }
+            simBtn.textContent = "⏹ Arrêter Simulation";
+            simBtn.style.background = "#ef4444";
+            roverTrail = [{ x: 70, y: 160 }];
+            roverAngle = 0;
+            let tick = 0;
+
+            demoTimer = setInterval(() => {
+                tick++;
+                // Simuler un obstacle qui approche a tick 15..22 puis s'ecarte
+                let f = 85;
+                if (tick >= 14 && tick <= 18) f = 28; // Zone Orange
+                else if (tick >= 19 && tick <= 22) f = 11; // Zone Rouge (arret)
+
+                drawRoverMap(f, 62, 68, "EN_MISSION");
+                const usF = document.getElementById("ultrasonic-front");
+                if (usF) usF.textContent = `${f} CM`;
+            }, 250);
+        });
+    }
+});
+
+
 
 var voiceEnabled = true;
 
