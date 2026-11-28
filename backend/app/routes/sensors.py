@@ -33,6 +33,8 @@ def receive_sensors():
     global sensor_data
 
     data = request.get_json(silent=True)
+    esp32_heartbeat['last_seen'] = time.time()
+    esp32_heartbeat['ip'] = request.remote_addr
 
     if not isinstance(data, dict):
         return jsonify({

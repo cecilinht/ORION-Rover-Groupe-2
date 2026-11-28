@@ -506,6 +506,7 @@ function updateNavigation(data) {
         "robot-status",
 
         robot.status || "INCONNU"
+    ); updateEspConnectionBadge(robot
 
     );
 
