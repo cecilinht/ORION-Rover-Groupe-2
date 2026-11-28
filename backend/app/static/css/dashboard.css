@@ -411,3 +411,162 @@ button[type="submit"]:hover, #camera-start:hover {
     font-size: 0.8rem;
     color: #cbd5e1;
 }
+
+
+/* ============================================================================
+   VIGNETTE CAMERA FLOTTANTE PROPRE AVEC BOUTON FERMER (X)
+   ============================================================================ */
+#camera {
+    position: fixed;
+    bottom: 20px;
+    right: 22px;
+    width: 310px;
+    z-index: 999;
+    margin: 0;
+    background: linear-gradient(160deg, rgba(13, 20, 36, 0.92), rgba(24, 24, 58, 0.88));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.72), 0 0 20px rgba(56, 189, 248, 0.15);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#camera.cam-hidden {
+    display: none;
+}
+
+#camera h2 {
+    border-left: none;
+    padding-left: 0;
+    padding-right: 78px;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: #38bdf8;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#camera h2::after {
+    content: "● LIVE";
+    position: absolute;
+    top: 12px;
+    right: 42px;
+    font-size: 0.65rem;
+    color: #fb7185;
+    background: rgba(244, 63, 94, 0.16);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    padding: 2px 7px;
+    border-radius: 999px;
+    animation: pulseLive 1.8s infinite ease-in-out;
+}
+
+#cam-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#cam-close-btn:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+#cam-reopen-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 22px;
+    z-index: 998;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0284c7, #4f46e5);
+    border: 1px solid rgba(125, 211, 252, 0.5);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+}
+
+#camera > p, #camera .card > p {
+    display: none;
+}
+
+#camera .camera-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 155px;
+    max-height: 170px;
+    margin-top: 8px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 11px;
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    background: rgba(2, 6, 23, 0.72);
+}
+
+#camera-feed {
+    width: 100%;
+    height: 162px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#camera-feed:not([src]), #camera-feed[src=""] {
+    display: none;
+}
+
+#camera-status {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+#camera .cam-buttons, #camera .card > div:first-of-type {
+    display: flex;
+    gap: 8px;
+}
+
+#camera button:not(#cam-close-btn) {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+}
+
+#ai-result {
+    position: fixed;
+    bottom: 274px;
+    right: 22px;
+    width: 310px;
+    z-index: 1000;
+    margin: 0;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, rgba(13, 20, 36, 0.94), rgba(30, 41, 59, 0.90));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-left: 4px solid #38bdf8;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+}
