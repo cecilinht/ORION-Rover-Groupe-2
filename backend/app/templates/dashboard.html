@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ORION-Rover | Centre de contrôle</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <h2>ORION<span>-Rover</span></h2>
+
+        <nav>
+            <a href="#overview" class="active">Vue générale</a>
+            <a href="#sensors">Capteurs</a>
+            <a href="#camera">Caméra en direct</a>
+            <a href="#navigation">Navigation</a>
+            <a href="#ai-recognition">Reconnaissance IA</a>
+            <a href="#statistics">Statistiques</a>
+            <a href="#history">Historique</a>
+            <a href="#delivery">Livraisons</a>
+            <a href="#emergency">Arrêt d'urgence</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            Groupe 2<br>
+            ORION UNIVERSITY<br>
+            2026
+        </div>
+
+    </aside>
+
+
+    <!-- CONTENU PRINCIPAL -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+                <h1>Centre de contrôle</h1>
+                <p>Système intelligent de livraison autonome</p>
+            </div>
+
+                        <div class="connection" style="display: flex; align-items: center; gap: 10px;">
+                <button id="voice-toggle" type="button" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #3b82f6; background: #1e3a8a; color: white; cursor: pointer; font-weight: 600;">
+                    🔊 Voix : ON
+                </button>
+                <button id="voice-test" type="button" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #e2e8f0; cursor: pointer;">
+                    Tester audio
+                </button>
+                <span id="connection-dot"></span>
+                <span id="connection-dot"></span>
+                <span id="connection-text">Connexion...</span>
+            </div>
+
+        </header>
+
+
+        <!-- 1. ETAT DU ROBOT -->
+
+        <section id="overview">
+
+            <h2>État du robot</h2>
+
+            <div class="cards">
+
+                <article class="card">
+                    <p>Statut</p>
+                    <h3 id="robot-status">ATTENTE</h3>
+                </article>
+
+                <article class="card">
+                    <p>Décision</p>
+                    <h3 id="robot-decision">--</h3>
+                </article>
+
+                <article class="card">
+                    <p>Vitesse calculée</p>
+                    <h3 id="robot-speed">0 %</h3>
+                </article>
+
+                <article class="card">
+                    <p>Direction</p>
+                    <h3 id="robot-direction">NONE</h3>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 2. CAPTEURS -->
+
+        <section id="sensors">
+
+            <h2>Capteurs ultrasoniques</h2>
+
+            <div class="cards">
+
+                <article class="card sensor-card">
+                    <p>Avant</p>
+                    <h3 id="distance-front">-- cm</h3>
+                </article>
+
+                <article class="card sensor-card">
+                    <p>Gauche</p>
+                    <h3 id="distance-left">-- cm</h3>
+                </article>
+
+                <article class="card sensor-card">
+                    <p>Droite</p>
+                    <h3 id="distance-right">-- cm</h3>
+                </article>
+
+            </div>
+
+            <h2>Capteurs infrarouges</h2>
+
+            <div class="cards">
+
+                <article class="card">
+                    <p>IR 1</p>
+                    <h3 id="ir-s1">--</h3>
+                </article>
+
+                <article class="card">
+                    <p>IR 2</p>
+                    <h3 id="ir-s2">--</h3>
+                </article>
+
+                <article class="card">
+                    <p>IR 3</p>
+                    <h3 id="ir-s3">--</h3>
+                </article>
+
+                <article class="card">
+                    <p>IR 4</p>
+                    <h3 id="ir-s4">--</h3>
+                </article>
+
+                <article class="card">
+                    <p>IR 5</p>
+                    <h3 id="ir-s5">--</h3>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 3. CAMERA EN DIRECT -->
+
+        <section id="camera">
+
+            <h2>Caméra en direct ORION-Rover</h2>
+
+            <article class="card">
+
+                <p>
+                    Surveillance vidéo du robot avec caméra connectée
+                </p>
+
+                <div class="camera-container">
+
+                    <img
+                        id="camera-feed"
+                        src=""
+                        alt="Flux vidéo de la caméra ORION-Rover"
+                    >
+
+                    <div id="camera-placeholder">
+                        <span>CAMÉRA ORION-ROVER</span>
+                        <p>Appuyez sur Démarrer la caméra</p>
+                    </div>
+
+                    <p id="camera-status">
+                        Caméra arrêtée
+                    </p>
+
+                </div>
+
+                <div class="camera-controls">
+
+                    <button
+                        id="camera-start"
+                        type="button"
+                    >
+                        Démarrer la caméra
+                    </button>
+
+                    <button
+                        id="camera-stop"
+                        type="button"
+                    >
+                        Arrêter la caméra
+                    </button>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- 4. NAVIGATION -->
+
+        <section id="navigation">
+
+            <h2>Navigation intelligente</h2>
+
+            <article class="card">
+
+                <p>Motif de la décision</p>
+
+                <h3 id="decision-reason">
+                    En attente des données...
+                </h3>
+
+            </article>
+
+        </section>
+
+
+        <!-- 5. RECONNAISSANCE IA -->
+
+        <section id="ai-recognition">
+
+            <h2>Reconnaissance des panneaux par IA</h2>
+
+            <article class="card">
+
+                <p>
+                    Analyse d'une image avec le modèle CNN local
+                </p>
+
+                <label for="ai-image">
+                    Sélectionner une image
+                </label>
+
+                <input
+                    type="file"
+                    id="ai-image"
+                    accept="image/*"
+                >
+
+                <button
+                    id="ai-analyze"
+                    type="button"
+                >
+                    Analyser le panneau
+                </button>
+
+                <div id="ai-result">
+                    <p>En attente d'une image...</p>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- 6. STATISTIQUES -->
+
+        <section id="statistics">
+
+            <h2>Statistiques de navigation</h2>
+
+            <article class="card">
+
+                <p>Répartition des décisions enregistrées</p>
+
+                <div id="decision-chart" class="decision-chart">
+                    <p>Chargement des statistiques...</p>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- 7. HISTORIQUE -->
+
+        <section id="history">
+
+            <h2>Historique de navigation</h2>
+
+            <article class="card">
+
+                <p>
+                    Décisions conservées dans la base de données SQLite
+                </p>
+
+                <div class="history-info">
+                    Nombre de décisions :
+                    <strong id="history-count">0</strong>
+                </div>
+
+                <div class="table-container">
+
+                    <table class="history-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Décision</th>
+                                <th>Direction</th>
+                                <th>Vitesse</th>
+                                <th>Motif</th>
+                                <th>Date et heure</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="navigation-history">
+
+                            <tr>
+                                <td colspan="6">
+                                    Chargement de l'historique...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p id="history-message"></p>
+
+            </article>
+
+        </section>
+
+
+        <!-- 8. LIVRAISONS -->
+
+        <section id="delivery">
+
+            <h2>Gestion des livraisons</h2>
+
+            <article class="card">
+
+                <label for="destination">
+                    Destination de livraison
+                </label>
+
+                <input
+                    type="text"
+                    id="destination"
+                    placeholder="Exemple : Salle informatique"
+                >
+
+                <button
+                    id="send-delivery"
+                    type="button"
+                >
+                    Envoyer la mission
+                </button>
+
+                <p id="delivery-message"></p>
+
+            </article>
+
+        </section>
+
+
+        <!-- 9. ARRET D'URGENCE -->
+
+        <section id="emergency" class="emergency-section">
+
+            <h2>Arrêt d'urgence</h2>
+
+            <p>
+                Commande d'arrêt logiciel du système de navigation.
+            </p>
+
+            <br>
+
+            <button
+                id="emergency-stop"
+                class="danger-button"
+                type="button"
+            >
+                ARRÊT D'URGENCE
+            </button>
+
+            <button
+                id="emergency-reset"
+                class="reset-button"
+                type="button"
+            >
+                Réinitialiser
+            </button>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+            ORION-Rover © 2026
+            — ORION UNIVERSITY
+            — Groupe 2
+        </footer>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="/static/js/dashboard.js"></script>
+
+</body>
+
+</html>

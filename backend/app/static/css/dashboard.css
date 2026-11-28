@@ -1,0 +1,572 @@
+﻿:root {
+    --bg-base: #070b14;
+    --glass-surface: rgba(17, 25, 45, 0.52);
+    --glass-surface-hover: rgba(26, 38, 66, 0.68);
+    --glass-sidebar: rgba(10, 15, 28, 0.78);
+    --border-hairline: rgba(99, 102, 241, 0.22);
+    --border-focus: rgba(56, 189, 248, 0.55);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-primary: #f8fafc;
+    --accent-blue: #38bdf8;
+    --accent-danger: #ef4444;
+    --accent-success: #10b981;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-base);
+    background-image:
+        radial-gradient(ellipse 75% 45% at 20% -5%, rgba(56, 189, 248, 0.18), transparent),
+        radial-gradient(ellipse 65% 45% at 85% 15%, rgba(168, 85, 247, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 50% 105%, rgba(16, 185, 129, 0.12), transparent);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    display: flex;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* SIDEBAR EPUREE */
+.sidebar {
+    width: 240px;
+    background: var(--glass-sidebar);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid var(--border-hairline);
+    padding: 28px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar h2, .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    padding: 0 12px;
+    margin-bottom: 32px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.18s ease;
+}
+
+.sidebar nav a:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-footer {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 14px 12px 0 12px;
+    border-top: 1px solid var(--border-hairline);
+}
+
+/* ZONE PRINCIPALE */
+.main-content {
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 1380px;
+    margin: 0 auto;
+}
+
+.topbar {
+    background: var(--glass-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-hairline);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.topbar h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.topbar p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* SECTIONS & GRILLE */
+section {
+    margin-bottom: 32px;
+}
+
+section h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+}
+
+.grid, .cards-grid, .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+/* CARTES VERRE MINIMALISTE */
+.card {
+    background: var(--glass-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-hairline);
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.card:hover {
+    border-color: var(--border-focus);
+    background: var(--glass-surface-hover);
+}
+
+.card h3 {
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.card p, .card span {
+    font-variant-numeric: tabular-nums;
+}
+
+/* BOUTONS MINIMALISTES PRO */
+button {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: var(--border-focus);
+}
+
+button[type="submit"], #camera-start {
+    background: var(--accent-primary);
+    color: #090d16;
+    border-color: var(--accent-primary);
+    font-weight: 600;
+}
+
+button[type="submit"]:hover, #camera-start:hover {
+    background: #e2e8f0;
+}
+
+#emergency-stop {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+#emergency-stop:hover {
+    background: var(--accent-danger);
+    border-color: var(--accent-danger);
+    color: #ffffff;
+}
+
+/* CAMERA & INPUTS */
+.camera-container {
+    margin-top: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-hairline);
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 240px;
+}
+
+#camera-feed {
+    width: 100%;
+    max-width: 540px;
+    display: block;
+}
+
+input[type="text"], input[type="file"] {
+    width: 100%;
+    margin: 8px 0 12px 0;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-hairline);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    font-size: 0.88rem;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+/* RESULTAT IA & TABLEAUX */
+#ai-result {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border-hairline);
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border-hairline);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+th, td {
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-hairline);
+    font-size: 0.85rem;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+#connection-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    background: var(--accent-success);
+    box-shadow: 0 0 8px var(--accent-success);
+}
+
+
+
+
+/* ============================================================================
+   ACCENTS COLORES MODERNES, NOTIFICATION IA & CAMERA FLOTTANTE PREMIUM
+   ============================================================================ */
+.topbar h1 {
+    background: linear-gradient(90deg, #f8fafc 0%, #38bdf8 55%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+section h2 {
+    color: #cbd5e1;
+    border-left: 3px solid #38bdf8;
+    padding-left: 10px;
+}
+
+.card {
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+button[type="submit"], #camera-start {
+    background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+    color: #ffffff;
+    border: 1px solid rgba(125, 211, 252, 0.45);
+    box-shadow: 0 4px 16px rgba(56, 189, 248, 0.28);
+}
+
+button[type="submit"]:hover, #camera-start:hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+    box-shadow: 0 6px 22px rgba(99, 102, 241, 0.45);
+}
+
+/* CAMERA FLOTTANTE PREMIUM (EN BAS A DROITE) */
+#camera {
+    position: fixed;
+    bottom: 20px;
+    right: 22px;
+    width: 300px;
+    z-index: 999;
+    margin: 0;
+    background: linear-gradient(160deg, rgba(15, 23, 42, 0.88), rgba(30, 27, 75, 0.82));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+#camera h2 {
+    border-left: none;
+    padding-left: 0;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    color: #38bdf8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#camera h2::after {
+    content: "● LIVE";
+    font-size: 0.68rem;
+    color: #fb7185;
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    padding: 2px 7px;
+    border-radius: 999px;
+}
+
+#camera .camera-container {
+    min-height: 155px;
+    max-height: 175px;
+    margin-top: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+#camera-feed {
+    width: 100%;
+    height: 168px;
+    object-fit: cover;
+}
+
+/* NOTIFICATION FLOTTANTE DE DETECTION IA (JUSTE AU-DESSUS DE LA CAM) */
+#ai-result {
+    position: fixed;
+    bottom: 278px;
+    right: 22px;
+    width: 300px;
+    z-index: 1000;
+    margin: 0;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.88));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-left: 4px solid #38bdf8;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#ai-result h3 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 3px;
+}
+
+#ai-result p {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+}
+
+
+/* ============================================================================
+   VIGNETTE CAMERA FLOTTANTE PROPRE AVEC BOUTON FERMER (X)
+   ============================================================================ */
+#camera {
+    position: fixed;
+    bottom: 20px;
+    right: 22px;
+    width: 310px;
+    z-index: 999;
+    margin: 0;
+    background: linear-gradient(160deg, rgba(13, 20, 36, 0.92), rgba(24, 24, 58, 0.88));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.72), 0 0 20px rgba(56, 189, 248, 0.15);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#camera.cam-hidden {
+    display: none;
+}
+
+#camera h2 {
+    border-left: none;
+    padding-left: 0;
+    padding-right: 78px;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: #38bdf8;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#camera h2::after {
+    content: "● LIVE";
+    position: absolute;
+    top: 12px;
+    right: 42px;
+    font-size: 0.65rem;
+    color: #fb7185;
+    background: rgba(244, 63, 94, 0.16);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    padding: 2px 7px;
+    border-radius: 999px;
+    animation: pulseLive 1.8s infinite ease-in-out;
+}
+
+#cam-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#cam-close-btn:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+#cam-reopen-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 22px;
+    z-index: 998;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0284c7, #4f46e5);
+    border: 1px solid rgba(125, 211, 252, 0.5);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+}
+
+#camera > p, #camera .card > p {
+    display: none;
+}
+
+#camera .camera-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 155px;
+    max-height: 170px;
+    margin-top: 8px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 11px;
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    background: rgba(2, 6, 23, 0.72);
+}
+
+#camera-feed {
+    width: 100%;
+    height: 162px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#camera-feed:not([src]), #camera-feed[src=""] {
+    display: none;
+}
+
+#camera-status {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+#camera .cam-buttons, #camera .card > div:first-of-type {
+    display: flex;
+    gap: 8px;
+}
+
+#camera button:not(#cam-close-btn) {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+}
+
+#ai-result {
+    position: fixed;
+    bottom: 274px;
+    right: 22px;
+    width: 310px;
+    z-index: 1000;
+    margin: 0;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, rgba(13, 20, 36, 0.94), rgba(30, 41, 59, 0.90));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-left: 4px solid #38bdf8;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+}

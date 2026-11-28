@@ -1,0 +1,25 @@
+=== EVALUATION CNN ORION-ROVER (6 CLASSES) ===
+Test Accuracy : 41.92%
+Test Loss     : 1.3297
+
+Rapport par classe :
+              precision    recall  f1-score   support
+
+        STOP     0.8333    0.7576    0.7937        33
+        LEFT     0.5000    0.2121    0.2979        33
+       RIGHT     0.2000    0.0303    0.0526        33
+        SLOW     0.3855    0.9697    0.5517        33
+     ARRIVAL     0.2727    0.5455    0.3636        33
+     NO_SIGN     0.0000    0.0000    0.0000        33
+
+    accuracy                         0.4192       198
+   macro avg     0.3653    0.4192    0.3433       198
+weighted avg     0.3653    0.4192    0.3433       198
+
+Matrice de confusion (ordre: ['STOP', 'LEFT', 'RIGHT', 'SLOW', 'ARRIVAL', 'NO_SIGN']) :
+[[25  0  0  7  1  0]
+ [ 0  7  4  9 13  0]
+ [ 0  6  1 21  5  0]
+ [ 1  0  0 32  0  0]
+ [ 3  0  0 12 18  0]
+ [ 1  1  0  2 29  0]]
