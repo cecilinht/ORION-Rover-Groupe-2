@@ -1,6 +1,11 @@
 
 from flask import Blueprint, request, jsonify
 
+from app.services.database import (
+    save_sensor_reading,
+    get_sensor_history
+)
+
 sensors_bp = Blueprint("sensors", __name__)
 
 sensor_data = {
@@ -19,7 +24,7 @@ sensor_data = {
 }
 
 
-# Recevoir les données
+# Recevoir les donnees des capteurs
 @sensors_bp.route("/api/sensors", methods=["POST"])
 def receive_sensors():
 
@@ -38,7 +43,7 @@ def receive_sensors():
         if not isinstance(data["ultrasonic"], dict):
             return jsonify({
                 "success": False,
-                "message": "Données ultrasoniques invalides"
+                "message": "Donnees ultrasoniques invalides"
             }), 400
 
         for key, value in data["ultrasonic"].items():
@@ -71,7 +76,7 @@ def receive_sensors():
         if not isinstance(data["infrared"], dict):
             return jsonify({
                 "success": False,
-                "message": "Données infrarouges invalides"
+                "message": "Donnees infrarouges invalides"
             }), 400
 
         for key, value in data["infrared"].items():
@@ -90,18 +95,34 @@ def receive_sensors():
 
             sensor_data["infrared"][key] = value
 
+    # Enregistrer les mesures dans SQLite
+    save_sensor_reading(sensor_data)
+
     return jsonify({
         "success": True,
-        "message": "Données des capteurs reçues",
+        "message": "Donnees des capteurs recues et enregistrees",
         "data": sensor_data
     })
 
 
-# Consulter les données
+# Consulter les dernieres donnees
 @sensors_bp.route("/api/sensors", methods=["GET"])
 def get_sensors():
 
     return jsonify({
         "success": True,
         "data": sensor_data
+    })
+
+
+# Consulter l'historique des mesures
+@sensors_bp.route("/api/sensors/history", methods=["GET"])
+def sensor_history():
+
+    history = get_sensor_history()
+
+    return jsonify({
+        "success": True,
+        "count": len(history),
+        "history": history
     })
