@@ -570,3 +570,50 @@ button[type="submit"]:hover, #camera-start:hover {
     border-radius: 14px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
 }
+
+
+/* ============================================================================
+   MISE EN PAGE MULTI-COLONNES COMPACTE & MODERNE (ZERO SCROLL INUTILE)
+   ============================================================================ */
+/* Force toutes les sections de cartes a s'aligner en grille horizontale */
+section > div:not(.table-container):not(.camera-container) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+/* Cas specifique des 5 capteurs IR : 5 colonnes compactes sur une ligne */
+#infrared > div, #sensors > div:last-of-type {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+}
+
+section {
+    margin-bottom: 22px;
+}
+
+.card {
+    padding: 16px 18px;
+    border-radius: 14px;
+}
+
+/* Mise en valeur des valeurs numeriques et etats dans les cartes */
+.card p, .card strong, .card span[id] {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+}
+
+#robot-status { color: #38bdf8 !important; }
+#nav-decision { color: #34d399 !important; }
+#nav-speed    { color: #a855f7 !important; }
+#nav-direction { color: #f59e0b !important; }
+
+/* Notification IA : masquer quand la camera est fermee */
+#camera.cam-hidden ~ #ai-result,
+body.cam-closed #ai-result {
+    opacity: 0.92;
+}
