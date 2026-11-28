@@ -1,11 +1,11 @@
-﻿#include <WiFi.h>
+#include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
 // 1. CONFIGURATION WI-FI & SERVEUR FLASK
-const char* WIFI_SSID     = "ORION_ATELIER_WIFI";
+const char* WIFI_SSID     = "ORION_ATELIER_WIFI"; // A adapter au Wi-Fi de l'atelier
 const char* WIFI_PASSWORD = "mot_de_passe_wifi";
-const char* SERVER_URL    = "http://192.168.1.100:5000";
+const char* SERVER_URL    = "http://10.58.213.81:5000";
 
 // 2. BROCHES MATERIELLES (GPIO ESP32)
 const int ENA_PIN = 25, IN1_PIN = 26, IN2_PIN = 27;
@@ -18,7 +18,7 @@ const int TRIG_FRONT = 5,  ECHO_FRONT = 18;
 const int TRIG_LEFT  = 19, ECHO_LEFT  = 21;
 const int TRIG_RIGHT = 22, ECHO_RIGHT = 23;
 
-const int IR_PINS[5] = {32, 33, 36, 39, 4};
+const int IR_PINS = {32, 33, 36, 39, 4};
 
 const int BUZZER_PIN = 15;
 const int LED_R_PIN  = 16, LED_G_PIN = 17, LED_B_PIN = 2;
@@ -42,9 +42,9 @@ volatile long leftTicks = 0, rightTicks = 0;
 long prevLeftTicks = 0, prevRightTicks = 0;
 float posX = 0.0, posY = 0.0, theta = 0.0;
 
-float histFront[3] = {100.0, 100.0, 100.0};
-float histLeft[3]  = {100.0, 100.0, 100.0};
-float histRight[3] = {100.0, 100.0, 100.0};
+float histFront = {100.0, 100.0, 100.0};
+float histLeft  = {100.0, 100.0, 100.0};
+float histRight = {100.0, 100.0, 100.0};
 int histIdx = 0;
 
 unsigned long lastControlTime = 0, lastHttpTime = 0;
@@ -85,7 +85,7 @@ float readUltrasonicRaw(int trigPin, int echoPin) {
 }
 
 float getFilteredDistance(float* buf) {
-  return (buf[0] + buf[1] + buf[2]) / 3.0;
+  return (buf + buf + buf) / 3.0;
 }
 
 void updateOdometry() {
@@ -105,7 +105,7 @@ void updateOdometry() {
 }
 
 float computeLineError(int* ir) {
-  const int weights[5] = {-2, -1, 0, 1, 2};
+  const int weights = {-2, -1, 0, 1, 2};
   int sum = 0, active = 0;
   for (int i = 0; i < 5; i++) {
     if (ir[i] == 0) { sum += weights[i]; active++; }
@@ -127,8 +127,8 @@ void syncWithFlask(float dFront, float dLeft, float dRight, int* ir) {
   us["right"] = round(dRight * 10.0) / 10.0;
 
   JsonObject irObj = doc.createNestedObject("infrared");
-  irObj["s1"] = ir[0]; irObj["s2"] = ir[1]; irObj["s3"] = ir[2];
-  irObj["s4"] = ir[3]; irObj["s5"] = ir[4];
+  irObj["s1"] = ir; irObj["s2"] = ir; irObj["s3"] = ir;
+  irObj["s4"] = ir; irObj["s5"] = ir;
 
   String payload;
   serializeJson(doc, payload);
@@ -193,7 +193,7 @@ void loop() {
     float dLeft  = getFilteredDistance(histLeft);
     float dRight = getFilteredDistance(histRight);
 
-    int ir[5];
+    int ir;
     for (int i = 0; i < 5; i++) ir[i] = digitalRead(IR_PINS[i]);
 
     updateOdometry();
