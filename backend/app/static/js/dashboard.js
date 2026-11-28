@@ -1,5 +1,38 @@
 
 // ============================================================================
+// INDICATEUR DE CONNEXION TEMPS REEL ESP32 <-> FLASK
+// ============================================================================
+let prevEspConnected = null;
+
+function updateEspConnectionBadge(statusJson) {
+    const dot = document.getElementById("connection-dot");
+    const text = document.getElementById("connection-text") || (dot ? dot.nextElementSibling : null);
+    if (!dot || !statusJson) return;
+
+    const isConnected = Boolean(statusJson.esp32_connected);
+    const ip = statusJson.esp32_ip || "Wi-Fi";
+
+    if (isConnected) {
+        dot.style.background = "#2EC4B6";
+        dot.style.boxShadow = "0 0 12px #2EC4B6";
+        if (text) text.textContent = `ESP32 Connecté (${ip})`;
+        if (prevEspConnected !== true) {
+            prevEspConnected = true;
+            pushSystemLog("ESP32", `Matériel connecté en Wi-Fi (${ip}) — Flux télémétrie actif`, "ai");
+        }
+    } else {
+        dot.style.background = "#f59e0b";
+        dot.style.boxShadow = "0 0 10px #f59e0b";
+        if (text) text.textContent = "ESP32 en attente (Serveur OK)";
+        if (prevEspConnected === true) {
+            prevEspConnected = false;
+            pushSystemLog("ESP32", "Signal ESP32 interrompu (vérifier alimentation USB/batterie)", "warn");
+        }
+    }
+}
+
+
+// ============================================================================
 // JOURNAL DE TELEMETRIE TEMPS REEL (NIVEAU LAUREAT)
 // ============================================================================
 let lastLoggedSign = "";

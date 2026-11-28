@@ -1,3 +1,5 @@
+import time
+esp32_heartbeat = {'last_seen': 0.0, 'ip': None}
 
 from flask import Blueprint, request, jsonify
 

@@ -1,3 +1,5 @@
+import time
+from app.routes.sensors import esp32_heartbeat
 
 from flask import Blueprint, request, jsonify
 
@@ -17,7 +19,7 @@ def get_status():
 
     return jsonify({
         "success": True,
-        "data": robot_state
+        "esp32_connected": (time.time() - esp32_heartbeat["last_seen"]) < 5.0, "esp32_ip": esp32_heartbeat["ip"], "data": robot_state
     })
 
 
@@ -70,7 +72,7 @@ def update_robot():
     return jsonify({
         "success": True,
         "message": "Etat du robot mis a jour",
-        "data": robot_state
+        "esp32_connected": (time.time() - esp32_heartbeat["last_seen"]) < 5.0, "esp32_ip": esp32_heartbeat["ip"], "data": robot_state
     })
 
 
@@ -84,7 +86,7 @@ def emergency_stop():
     return jsonify({
         "success": True,
         "message": "Arret d'urgence logiciel active",
-        "data": robot_state
+        "esp32_connected": (time.time() - esp32_heartbeat["last_seen"]) < 5.0, "esp32_ip": esp32_heartbeat["ip"], "data": robot_state
     })
 
 
@@ -98,5 +100,5 @@ def emergency_reset():
     return jsonify({
         "success": True,
         "message": "Arret d'urgence logiciel reinitialise",
-        "data": robot_state
+        "esp32_connected": (time.time() - esp32_heartbeat["last_seen"]) < 5.0, "esp32_ip": esp32_heartbeat["ip"], "data": robot_state
     })
