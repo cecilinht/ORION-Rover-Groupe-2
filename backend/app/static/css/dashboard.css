@@ -292,3 +292,87 @@ th {
     background: var(--accent-success);
     box-shadow: 0 0 8px var(--accent-success);
 }
+
+
+/* ============================================================================
+   CAMERA FLOTTANTE (PICTURE-IN-PICTURE GLASSMORPHISM EN BAS A DROITE)
+   ============================================================================ */
+#camera {
+    position: fixed;
+    bottom: 22px;
+    right: 24px;
+    width: 310px;
+    z-index: 999;
+    margin: 0;
+    background: rgba(12, 18, 32, 0.82);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#camera:hover {
+    border-color: rgba(56, 189, 248, 0.7);
+}
+
+#camera h2 {
+    font-size: 0.78rem;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+}
+
+#camera .card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+#camera button {
+    padding: 5px 10px;
+    font-size: 0.78rem;
+}
+
+#camera .camera-container {
+    min-height: 160px;
+    max-height: 185px;
+    margin-top: 8px;
+    border-radius: 10px;
+}
+
+#camera-feed {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+}
+
+/* Afficher aussi le resultat IA en direct juste sous la camera flottante */
+#ai-result {
+    position: fixed;
+    bottom: 285px;
+    right: 24px;
+    width: 310px;
+    z-index: 999;
+    margin: 0;
+    padding: 10px 14px;
+    background: rgba(12, 18, 32, 0.88);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+#ai-result h3 {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+#ai-result p {
+    font-size: 0.78rem;
+    color: #cbd5e1;
+}
