@@ -15,7 +15,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
     ctx.clearRect(0, 0, W, H);
 
     // Grille metrique (50 cm / carreau)
-    ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+    ctx.strokeStyle = "rgba(108, 99, 255, 0.08)";
     ctx.lineWidth = 1;
     for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
     for (let y = 0; y <= H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
@@ -24,7 +24,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
     ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
     ctx.lineWidth = 16;
     ctx.strokeRect(70, 55, W - 140, H - 110);
-    ctx.strokeStyle = "#38bdf8";
+    ctx.strokeStyle = "#6C63FF";
     ctx.lineWidth = 1.5;
     ctx.setLineDash([6, 6]);
     ctx.strokeRect(70, 55, W - 140, H - 110);
@@ -32,7 +32,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
 
     // Points de livraison (Base, Zone A, Zone B, Zone C)
     const zones = [
-        { x: 70, y: 160, label: "BASE", color: "#10b981" },
+        { x: 70, y: 160, label: "BASE", color: "#2EC4B6" },
         { x: W / 2, y: 55, label: "ZONE A", color: "#a855f7" },
         { x: W - 70, y: 160, label: "ZONE B", color: "#a855f7" },
         { x: W / 2, y: H - 55, label: "ZONE C", color: "#a855f7" }
@@ -65,7 +65,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
 
     // Trace trajectoire odometrique
     if (roverTrail.length > 1) {
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.85)";
+        ctx.strokeStyle = "rgba(108, 99, 255, 0.85)";
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(roverTrail[0].x, roverTrail[0].y);
@@ -76,7 +76,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
     // Faisceau radar ultrason avant (Vert >40, Orange 15-40, Rouge <15)
     const fDist = (frontDist !== null && frontDist !== undefined) ? frontDist : 85;
     const beamLen = Math.min(95, Math.max(22, fDist * 1.1));
-    const beamColor = fDist < 15 ? "#ef4444" : (fDist <= 40 ? "#f59e0b" : "#10b981");
+    const beamColor = fDist < 15 ? "#ef4444" : (fDist <= 40 ? "#f59e0b" : "#2EC4B6");
 
     ctx.fillStyle = beamColor + "44";
     ctx.beginPath();
@@ -89,7 +89,7 @@ function drawRoverMap(frontDist = 85, leftDist = 60, rightDist = 65, status = "A
     ctx.save();
     ctx.translate(pos.x, pos.y);
     ctx.rotate(roverAngle);
-    ctx.fillStyle = "#38bdf8";
+    ctx.fillStyle = "#6C63FF";
     ctx.fillRect(-13, -10, 26, 20);
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(7, -7, 4, 14);
