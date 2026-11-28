@@ -1005,3 +1005,29 @@ if (document.readyState === "loading") {
     initializeDashboard();
 }
 
+
+
+// Gestion des boutons Voix ON/OFF et Test
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("voice-toggle");
+    const testBtn = document.getElementById("voice-test");
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+            voiceEnabled = !voiceEnabled;
+            toggleBtn.textContent = voiceEnabled ? "🔊 Voix : ON" : "🔇 Voix : OFF";
+            toggleBtn.style.background = voiceEnabled ? "#1e3a8a" : "#334155";
+            if (!voiceEnabled && "speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+            } else if (voiceEnabled) {
+                speakFrench("Synthèse vocale activée");
+            }
+        });
+    }
+
+    if (testBtn) {
+        testBtn.addEventListener("click", () => {
+            speakFrench("Système vocal ORION Rover opérationnel. Prêt pour la livraison.");
+        });
+    }
+});
