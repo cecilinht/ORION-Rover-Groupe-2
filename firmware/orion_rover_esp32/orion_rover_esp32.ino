@@ -3,8 +3,8 @@
 #include <ArduinoJson.h>
 
 // 1. CONFIGURATION WI-FI & SERVEUR FLASK
-const char* WIFI_SSID     = "ORION_ATELIER_WIFI"; // A adapter au Wi-Fi de l'atelier
-const char* WIFI_PASSWORD = "mot_de_passe_wifi";
+const char* WIFI_SSID     = "Cecilin-HT";
+const char* WIFI_PASSWORD = "herinjaratanjonacecilinhh1551";
 const char* SERVER_URL    = "http://10.58.213.81:5000";
 
 // 2. BROCHES MATERIELLES (GPIO ESP32)
@@ -18,7 +18,7 @@ const int TRIG_FRONT = 5,  ECHO_FRONT = 18;
 const int TRIG_LEFT  = 19, ECHO_LEFT  = 21;
 const int TRIG_RIGHT = 22, ECHO_RIGHT = 23;
 
-const int IR_PINS = {32, 33, 36, 39, 4};
+const int IR_S1 = 32, IR_S2 = 33, IR_S3 = 36, IR_S4 = 39, IR_S5 = 4;
 
 const int BUZZER_PIN = 15;
 const int LED_R_PIN  = 16, LED_G_PIN = 17, LED_B_PIN = 2;
@@ -42,10 +42,10 @@ volatile long leftTicks = 0, rightTicks = 0;
 long prevLeftTicks = 0, prevRightTicks = 0;
 float posX = 0.0, posY = 0.0, theta = 0.0;
 
-float histFront = {100.0, 100.0, 100.0};
-float histLeft  = {100.0, 100.0, 100.0};
-float histRight = {100.0, 100.0, 100.0};
-int histIdx = 0;
+// Moyenne glissante sur 3 mesures par capteur ultrason
+float f0 = 100.0, f1 = 100.0, f2 = 100.0;
+float l0 = 100.0, l1 = 100.0, l2 = 100.0;
+float r0 = 100.0, r1 = 100.0, r2 = 100.0;
 
 unsigned long lastControlTime = 0, lastHttpTime = 0;
 const unsigned long CONTROL_DT_MS = 50;
@@ -84,10 +84,6 @@ float readUltrasonicRaw(int trigPin, int echoPin) {
   return constrain((duration * SOUND_SPEED_CM_US) / 2.0, 0.0, 400.0);
 }
 
-float getFilteredDistance(float* buf) {
-  return (buf + buf + buf) / 3.0;
-}
-
 void updateOdometry() {
   long dL = leftTicks - prevLeftTicks;
   long dR = rightTicks - prevRightTicks;
@@ -104,40 +100,42 @@ void updateOdometry() {
   theta += deltaTheta;
 }
 
-float computeLineError(int* ir) {
-  const int weights = {-2, -1, 0, 1, 2};
+float computeLineError(int s1, int s2, int s3, int s4, int s5) {
   int sum = 0, active = 0;
-  for (int i = 0; i < 5; i++) {
-    if (ir[i] == 0) { sum += weights[i]; active++; }
-  }
+  if (s1 == 0) { sum += -2; active++; }
+  if (s2 == 0) { sum += -1; active++; }
+  if (s3 == 0) { sum +=  0; active++; }
+  if (s4 == 0) { sum +=  1; active++; }
+  if (s5 == 0) { sum +=  2; active++; }
   if (active == 0) return pidPrevError;
   return (float)sum / (float)active;
 }
 
-void syncWithFlask(float dFront, float dLeft, float dRight, int* ir) {
+void syncWithFlask(float dFront, float dLeft, float dRight, int s1, int s2, int s3, int s4, int s5) {
   if (WiFi.status() != WL_CONNECTED) return;
   HTTPClient http;
 
   http.begin(String(SERVER_URL) + "/api/sensors");
   http.addHeader("Content-Type", "application/json");
-  StaticJsonDocument<384> doc;
-  JsonObject us = doc.createNestedObject("ultrasonic");
+  JsonDocument doc;
+  JsonObject us = doc["ultrasonic"].to<JsonObject>();
   us["front"] = round(dFront * 10.0) / 10.0;
   us["left"]  = round(dLeft  * 10.0) / 10.0;
   us["right"] = round(dRight * 10.0) / 10.0;
 
-  JsonObject irObj = doc.createNestedObject("infrared");
-  irObj["s1"] = ir; irObj["s2"] = ir; irObj["s3"] = ir;
-  irObj["s4"] = ir; irObj["s5"] = ir;
+  JsonObject irObj = doc["infrared"].to<JsonObject>();
+  irObj["s1"] = s1; irObj["s2"] = s2; irObj["s3"] = s3;
+  irObj["s4"] = s4; irObj["s5"] = s5;
 
   String payload;
   serializeJson(doc, payload);
-  http.POST(payload);
+  int code = http.POST(payload);
+  Serial.println("POST /api/sensors -> HTTP " + String(code));
   http.end();
 
   http.begin(String(SERVER_URL) + "/api/status");
   if (http.GET() == 200) {
-    StaticJsonDocument<256> statusDoc;
+    JsonDocument statusDoc;
     deserializeJson(statusDoc, http.getString());
     emergencyStop = statusDoc["data"]["emergency_stop"] | false;
   }
@@ -146,7 +144,7 @@ void syncWithFlask(float dFront, float dLeft, float dRight, int* ir) {
   if (currentState == STATE_ATTENTE && !emergencyStop) {
     http.begin(String(SERVER_URL) + "/api/deliveries");
     if (http.GET() == 200) {
-      StaticJsonDocument<512> delivDoc;
+      JsonDocument delivDoc;
       deserializeJson(delivDoc, http.getString());
       if (!delivDoc["current_delivery"].isNull()) {
         currentState = STATE_ROUTE;
@@ -164,7 +162,8 @@ void setup() {
   pinMode(TRIG_FRONT, OUTPUT); pinMode(ECHO_FRONT, INPUT);
   pinMode(TRIG_LEFT, OUTPUT);  pinMode(ECHO_LEFT, INPUT);
   pinMode(TRIG_RIGHT, OUTPUT); pinMode(ECHO_RIGHT, INPUT);
-  for (int i = 0; i < 5; i++) pinMode(IR_PINS[i], INPUT);
+  pinMode(IR_S1, INPUT); pinMode(IR_S2, INPUT); pinMode(IR_S3, INPUT);
+  pinMode(IR_S4, INPUT); pinMode(IR_S5, INPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(LED_R_PIN, OUTPUT); pinMode(LED_G_PIN, OUTPUT); pinMode(LED_B_PIN, OUTPUT);
 
@@ -173,9 +172,20 @@ void setup() {
 
   setLedRGB(false, false, true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connexion Wi-Fi");
   int tries = 0;
-  while (WiFi.status() != WL_CONNECTED && tries < 20) { delay(500); tries++; }
-  setLedRGB(false, true, false);
+  while (WiFi.status() != WL_CONNECTED && tries < 25) {
+    delay(500);
+    Serial.print(".");
+    tries++;
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nWi-Fi connecte ! IP ESP32 : " + WiFi.localIP().toString());
+    setLedRGB(false, true, false);
+  } else {
+    Serial.println("\nEchec Wi-Fi (mode autonome actif)");
+    setLedRGB(true, false, false);
+  }
 }
 
 void loop() {
@@ -184,17 +194,20 @@ void loop() {
     float dt = (now - lastControlTime) / 1000.0;
     lastControlTime = now;
 
-    histFront[histIdx] = readUltrasonicRaw(TRIG_FRONT, ECHO_FRONT);
-    histLeft[histIdx]  = readUltrasonicRaw(TRIG_LEFT,  ECHO_LEFT);
-    histRight[histIdx] = readUltrasonicRaw(TRIG_RIGHT, ECHO_RIGHT);
-    histIdx = (histIdx + 1) % 3;
+    // Decalage moyenne glissante sur 3 mesures
+    f2 = f1; f1 = f0; f0 = readUltrasonicRaw(TRIG_FRONT, ECHO_FRONT);
+    l2 = l1; l1 = l0; l0 = readUltrasonicRaw(TRIG_LEFT,  ECHO_LEFT);
+    r2 = r1; r1 = r0; r0 = readUltrasonicRaw(TRIG_RIGHT, ECHO_RIGHT);
 
-    float dFront = getFilteredDistance(histFront);
-    float dLeft  = getFilteredDistance(histLeft);
-    float dRight = getFilteredDistance(histRight);
+    float dFront = (f0 + f1 + f2) / 3.0;
+    float dLeft  = (l0 + l1 + l2) / 3.0;
+    float dRight = (r0 + r1 + r2) / 3.0;
 
-    int ir;
-    for (int i = 0; i < 5; i++) ir[i] = digitalRead(IR_PINS[i]);
+    int s1 = digitalRead(IR_S1);
+    int s2 = digitalRead(IR_S2);
+    int s3 = digitalRead(IR_S3);
+    int s4 = digitalRead(IR_S4);
+    int s5 = digitalRead(IR_S5);
 
     updateOdometry();
 
@@ -216,7 +229,7 @@ void loop() {
             setLedRGB(true, true, false);
             float ratio = (dFront - 15.0) / 25.0;
             int spd = (int)(90 + ratio * (baseSpeed - 90));
-            float err = computeLineError(ir);
+            float err = computeLineError(s1, s2, s3, s4, s5);
             pidIntegral += err * dt;
             float deriv = (err - pidPrevError) / dt;
             pidPrevError = err;
@@ -226,7 +239,7 @@ void loop() {
           }
           default: {
             setLedRGB(false, true, false);
-            float err = computeLineError(ir);
+            float err = computeLineError(s1, s2, s3, s4, s5);
             pidIntegral += err * dt;
             float deriv = (err - pidPrevError) / dt;
             pidPrevError = err;
@@ -255,7 +268,7 @@ void loop() {
 
     if (now - lastHttpTime >= HTTP_DT_MS) {
       lastHttpTime = now;
-      syncWithFlask(dFront, dLeft, dRight, ir);
+      syncWithFlask(dFront, dLeft, dRight, s1, s2, s3, s4, s5);
     }
   }
 }
