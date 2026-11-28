@@ -1,3 +1,51 @@
+
+// ======================================
+// MOTEUR SONORE & VOCAL HORS-LIGNE (WEB AUDIO API)
+// ======================================
+let audioCtx = null;
+
+function playTone(freq, duration, delay = 0, type = "sine") {
+    if (!voiceEnabled) return;
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (!audioCtx) return;
+    if (audioCtx.state === "suspended") audioCtx.resume();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(0.25, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime + delay);
+    osc.stop(audioCtx.currentTime + delay + duration);
+}
+
+function playSignAlert(signClass) {
+    if (signClass === "STOP") {
+        playTone(440, 0.18, 0.0, "square");
+        playTone(330, 0.25, 0.22, "square");
+    } else if (signClass === "LEFT") {
+        playTone(660, 0.12, 0.0, "triangle");
+        playTone(520, 0.18, 0.15, "triangle");
+    } else if (signClass === "RIGHT") {
+        playTone(520, 0.12, 0.0, "triangle");
+        playTone(660, 0.18, 0.15, "triangle");
+    } else if (signClass === "SLOW") {
+        playTone(480, 0.20, 0.0, "sine");
+        playTone(480, 0.20, 0.25, "sine");
+    } else if (signClass === "ARRIVAL") {
+        playTone(523, 0.12, 0.0, "sine");
+        playTone(659, 0.12, 0.14, "sine");
+        playTone(784, 0.25, 0.28, "sine");
+    }
+}
+
 ﻿
 // ======================================
 // ORION-ROVER - DASHBOARD JAVASCRIPT
@@ -1027,7 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (testBtn) {
         testBtn.addEventListener("click", () => {
-            speakFrench("Système vocal ORION Rover opérationnel. Prêt pour la livraison.");
+            playSignAlert("ARRIVAL"); speakFrench("Système vocal ORION Rover opérationnel.");
         });
     }
 });

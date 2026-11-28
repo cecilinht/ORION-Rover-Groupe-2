@@ -31,7 +31,7 @@ class VideoService:
 
     def frame_to_base64(self, frame):
 
-        success, buffer = cv2.imencode(".jpg", frame)
+        success, buffer = cv2.imencode(".jpg", cv2.resize(frame, (480, 360)), [int(cv2.IMWRITE_JPEG_QUALITY), 70])
 
         if not success:
             raise RuntimeError("Erreur encodage image")
