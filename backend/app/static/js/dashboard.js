@@ -2345,3 +2345,54 @@ document.addEventListener("DOMContentLoaded", () => {
         reopenBtn.style.display = "none";
     });
 });
+
+
+// ============================================================================
+// DEPLACEMENT LIBRE (DRAG & DROP) DE LA VIGNETTE CAMERA + NOTIFICATION IA
+// ============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const camBox = document.getElementById("camera");
+    const aiBox = document.getElementById("ai-result");
+    if (!camBox) return;
+
+    const handle = camBox.querySelector("h2") || camBox;
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+
+    function syncNotifPosition() {
+        if (!aiBox) return;
+        const rect = camBox.getBoundingClientRect();
+        aiBox.style.left = rect.left + "px";
+        aiBox.style.top = Math.max(10, rect.top - aiBox.offsetHeight - 10) + "px";
+        aiBox.style.right = "auto";
+        aiBox.style.bottom = "auto";
+    }
+
+    handle.addEventListener("mousedown", (e) => {
+        if (e.target.id === "cam-close-btn") return;
+        isDragging = true;
+        const rect = camBox.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        camBox.style.right = "auto";
+        camBox.style.bottom = "auto";
+        camBox.style.left = rect.left + "px";
+        camBox.style.top = rect.top + "px";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const maxX = window.innerWidth - camBox.offsetWidth - 8;
+        const maxY = window.innerHeight - camBox.offsetHeight - 8;
+        const newLeft = Math.min(maxX, Math.max(8, e.clientX - offsetX));
+        const newTop = Math.min(maxY, Math.max(8, e.clientY - offsetY));
+
+        camBox.style.left = newLeft + "px";
+        camBox.style.top = newTop + "px";
+        syncNotifPosition();
+    });
+
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+});

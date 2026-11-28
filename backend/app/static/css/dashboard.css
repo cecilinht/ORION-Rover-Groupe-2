@@ -617,3 +617,13 @@ section {
 body.cam-closed #ai-result {
     opacity: 0.92;
 }
+
+
+/* Curseur de deplacement sur la barre de titre de la camera */
+#camera h2 {
+    cursor: grab;
+    user-select: none;
+}
+#camera h2:active {
+    cursor: grabbing;
+}
