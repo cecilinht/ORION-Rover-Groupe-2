@@ -1,5 +1,22 @@
 
 // ============================================================================
+// JOURNAL DE TELEMETRIE TEMPS REEL (NIVEAU LAUREAT)
+// ============================================================================
+let lastLoggedSign = "";
+
+function pushSystemLog(category, message, level = "info") {
+    const box = document.getElementById("live-console");
+    if (!box) return;
+    const now = new Date().toLocaleTimeString("fr-FR");
+    const div = document.createElement("div");
+    div.className = `log-entry log-${level}`;
+    div.innerHTML = `<span style="color:#94a3b8;">[${now}]</span> <strong style="color:#2EC4B6;">[${category}]</strong> ${message}`;
+    box.prepend(div);
+    if (box.children.length > 30) box.removeChild(box.lastChild);
+}
+
+
+// ============================================================================
 // CARTE 2D INTERACTIVE, SIMULATION DEMO JURY & SYNCHRO NOTIF CAMERA
 // ============================================================================
 let roverTrail = [{ x: 70, y: 160 }];
