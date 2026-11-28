@@ -86,7 +86,7 @@ let cameraBusy = false;
 let aiBusy = false;
 let lastAIAnalysis = 0;
 
-const CAMERA_INTERVAL = 1000;
+const CAMERA_INTERVAL = 1500;
 const AI_INTERVAL = 1000;
 
 
@@ -709,7 +709,7 @@ async function captureCameraFrame() {
         const imageSource =
             "data:image/jpeg;base64," + data.image;
 
-        cameraFeed.src = imageSource;
+        if (!cameraFeed.src.includes("/api/video/stream")) { cameraFeed.src = "/api/video/stream?t=" + Date.now(); }
 
         cameraFeed.style.display = "block";
 
